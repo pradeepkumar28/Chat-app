@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react';
 import queryString  from 'query-string';
 import io from 'socket.io-client';
-
+import TextContainer from '../TextContainer/TextContainer.js'
 import './Chat.css';
 import InfoBar from '../infoBar/infoBar';
 import Input from '../Input/Input';
@@ -13,6 +13,7 @@ const Chat = ({location}) => {
 
      const [name, setName] =useState('');
      const [room, setRoom] =useState('');
+     const [users, setUsers] = useState('');
      const [message, setMessage] =useState('');
      const [messages, setMessages] =useState([]);
 
@@ -27,30 +28,30 @@ const Chat = ({location}) => {
             extraHeaders: {
               "my-custom-header": "abcd"
             }
-            });
+            })
          
             setRoom(room);
             setName(name);
             
          socket.emit('join',{ name,room },(error)=>{
-             console.log(error);
+           if(error)  console.log(error);
          });
 
 
-       return () => {
-             socket.emit('disconnnet');
-             
-             socket.off();
-
-         }
+  
 
      },[ENDPOINT,location.search]);
 
      useEffect( () => {
             socket.on('message', (message) => {
-           setMessages([...messages,message])
+           setMessages(messages => [...messages,message])
             });
-     },[messages]);
+
+            socket.on("roomData", ({ users }) => {
+                setUsers(users);
+              });
+
+     },[]);
     const sendMessage = (event) => {
         event.preventDefault();
 
@@ -58,7 +59,7 @@ const Chat = ({location}) => {
             socket.emit('sendMessage',message,() => setMessage(''));
         }
     }
-console.log(message,messages);
+
 
     return (
         <div className="outerContainer">
@@ -68,6 +69,7 @@ console.log(message,messages);
                <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
              
            </div>
+           <TextContainer users={users}/>
         </div>
     );
 }
