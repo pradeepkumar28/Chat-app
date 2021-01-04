@@ -7,6 +7,7 @@ import InfoBar from '../infoBar/infoBar';
 import Input from '../Input/Input';
 import Messages from '../Messages/Messages';
 
+const ENDPOINT  = 'https://ch4t-it.herokuapp.com/';
 let socket;
 
 const Chat = ({location}) => {
@@ -17,18 +18,12 @@ const Chat = ({location}) => {
      const [message, setMessage] =useState('');
      const [messages, setMessages] =useState([]);
 
-      const ENDPOINT  = 'localhost:5000';
 
      useEffect(()=>{
 
          const {name,room} =queryString.parse(location.search);
 
-         socket = io(ENDPOINT, {
-            withCredentials: true,
-            extraHeaders: {
-              "my-custom-header": "abcd"
-            }
-            })
+         socket = io(ENDPOINT)
          
             setRoom(room);
             setName(name);

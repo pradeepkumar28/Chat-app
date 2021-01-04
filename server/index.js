@@ -13,15 +13,24 @@ const app =express();
 const server = http.createServer(app);
 const io = socketio(server,{
     cors: {
-      origin: "http://localhost:3000",
-      methods: ["GET", "POST"],  
-      allowedHeaders: ["my-custom-header"],
+      origin: 'https://chat-n-chat.netlify.app',
       credentials: true
     }
 });
 
 app.use(cors());
 app.use(router);
+// app.get('/products/:id', function (req, res, next) {
+//     res.json({msg: 'This is CORS-enabled for all origins!'})
+//     next();
+//   })
+  
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "https://chat-n-chat.netlify.app/"); // update to match the domain you will make the request from
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+ // });
+  
 
 
 io.on('connect', (socket)=>{
